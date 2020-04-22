@@ -1,12 +1,14 @@
 import * as fs from "fs";
 import path from "path";
+import R from "ramda";
 
 import { DatasetItem, FreqItem } from "./types";
+import { train } from "./train";
 
 const getData = (): DatasetItem[] => {
   let data = fs.readFileSync(path.join(__dirname, "data.json"));
   let arr = JSON.parse(data.toString());
-  arr.length = 5000;
+  arr.length = 200;
   return arr;
 };
 
@@ -38,10 +40,7 @@ const countFreq = (data: DatasetItem[], word: string): FreqItem => {
   };
 };
 
-const predict = (
-  freqArr: FreqItem[],
-  text: string
-) => {
+const predict = (freqArr: FreqItem[], text: string) => {
   let total_spam_words = 0,
     total_ham_words = 0,
     total_words_count = 0;
@@ -81,62 +80,48 @@ const predict = (
   }
 
   console.log(`Spam: ${spam} Ham: ${ham}`);
-  
 
   if (spam >= ham) {
-    return 'spam'
+    return "spam";
   } else {
-    return 'ham'
+    return "ham";
   }
 };
 
 const start = async () => {
   const data = getData();
 
-  let words: string[] = [];
+  console.log(train(data).length)
 
-  data.forEach((item, index) => {
-    words = words.concat(getWordsFromRow(item.text));
-  });
-
-  words = [...new Set(words)];
-  console.log(`Words: ${words.length}`);
-
-  // Freq Table
-  let freqArr = words.map((x, index, arr) => {
-    if (index % 100 === 0) console.log(`${index}/${arr.length}`);
-    return countFreq(data, x);
-  });
-
-  fs.writeFileSync(
-    path.join(__dirname, "freq.json"),
-    JSON.stringify(freqArr, null, 2)
-  );
+  // fs.writeFileSync(
+  //   path.join(__dirname, "freq.json"),
+  //   JSON.stringify(freqArr, null, 2)
+  // );
 };
 
-// start();
+start();
 
-const fArr = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "freq.json")).toString()
-);
+// const fArr = JSON.parse(
+//   fs.readFileSync(path.join(__dirname, "freq.json")).toString()
+// );
 
-const test = () => {
-  let cases: DatasetItem[] = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "data.json")).toString()
-  )
-  console.log(cases.length);
-  
-  cases = cases.slice(5000, cases.length)
-  let right = 0;
-  cases.forEach((item, index) => {
-    if (index % 100 === 0) console.log(`${index}/${cases.length} predicted`);
-    let res = predict(fArr, item.text);
-    if (res === item.type) right++;
-  });
+// const test = () => {
+//   let cases: DatasetItem[] = JSON.parse(
+//     fs.readFileSync(path.join(__dirname, "data.json")).toString()
+//   )
+//   console.log(cases.length);
 
-  console.log(`Accuracy: ${Math.round(right/cases.length * 10000) / 100}%`);
-  
-}
+//   cases = cases.slice(5000, cases.length)
+//   let right = 0;
+//   cases.forEach((item, index) => {
+//     if (index % 100 === 0) console.log(`${index}/${cases.length} predicted`);
+//     let res = predict(fArr, item.text);
+//     if (res === item.type) right++;
+//   });
+
+//   console.log(`Accuracy: ${Math.round(right/cases.length * 10000) / 100}%`);
+
+// }
 
 // start()
 // test()
@@ -147,5 +132,19 @@ const test = () => {
 //   )
 // );
 
-
-
+// console.log(
+//   R.union(
+//     [
+//       {
+//         a: 1,
+//         b: 2,
+//       },
+//     ],
+//     [
+//       {
+//         a: 1,
+//         b: 2,
+//       },
+//     ]
+//   )
+// );
