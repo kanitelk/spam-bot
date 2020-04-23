@@ -1,7 +1,7 @@
 import { DatasetItem, FreqItem } from "./types";
 import R from "ramda";
 
-const getWordsFromRow = (text: string): string[] =>
+export const getWordsFromRow = (text: string): string[] =>
   text
     .split(" ")
     .map((word) => word.toLowerCase().replace(/[^A-Z0-9]+/gi, ""))
