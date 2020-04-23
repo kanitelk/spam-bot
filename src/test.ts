@@ -1,14 +1,10 @@
-import * as fs from "fs";
-import path from "path";
-
-import { readTrainFromFile } from "./";
+import { readTrainFromFile } from "./train";
 import { predict } from "./predict";
+import { getDatasetData } from "./train";
 import { DatasetItem } from "./types";
 
 export const testAccuracy = (count: number = 500): void => {
-  let cases: DatasetItem[] = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "data.json")).toString()
-  );
+  let cases: DatasetItem[] = getDatasetData();
 
   cases = cases.slice(5000, cases.length);
   let right = 0;

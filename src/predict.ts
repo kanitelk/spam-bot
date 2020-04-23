@@ -7,6 +7,7 @@ import {
   PredictResult,
   WordProbability,
 } from "./types";
+import { bot } from "./bot";
 
 export const countWordsByClassInArr = (freqArr: FreqItem[]): CountedWords =>
   freqArr.reduce((prev, cur) => ({
